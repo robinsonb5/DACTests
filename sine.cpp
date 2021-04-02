@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <list>
+#include <cstdio>
 #include <cmath>
 
 #include DACHEADER
@@ -13,7 +9,6 @@
 #undef TRACE
 
 static VerilatedVcdC *trace;
-
 // Declare the global testbench, of a type externally defined
 typedef DAC testbench;
 static testbench *tb;
@@ -38,7 +33,6 @@ void tick() {
 #define SAMPLES 8192
 
 #define OVERSAMPLE 2048
-#define PWMCYCLE 32
 #define OUTFILTERSHIFT 12
 
 
@@ -66,7 +60,7 @@ void run_test()
 			tick();
 
 			s=0xffff*tb->q;
-			// Single-pole approximately of the reconstruction filter
+			// Single-pole approximation of the reconstruction filter
 			outfilter+=((s<<OUTFILTERSHIFT)-outfilter)>>OUTFILTERSHIFT;
 		}
 
@@ -89,7 +83,7 @@ int main(int argc, char **argv) {
 	tb = new testbench;
 #ifdef TRACE
 	tb->trace(trace, 99);
-	trace->open("wave_%s.vcd","\""#DAC#"\"");
+	trace->open("wave.vcd");
 #endif
 
 	// Reset the testbench
@@ -105,5 +99,7 @@ int main(int argc, char **argv) {
 #ifdef TRACE
 	trace->close();
 #endif
+	delete tb;
+	return(0);
 }
 

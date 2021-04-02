@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <list>
+#include <cstdio>
 #include <cmath>
 
 #include DACHEADER
@@ -75,7 +71,7 @@ void run_test()
 				s=0x5000;
 			else
 				s=(0xffff*tb->q);
-			// Single-pole approximately of the reconstruction filter
+			// Single-pole approximation of the reconstruction filter
 			outfilter+=((s<<OUTFILTERSHIFT)-outfilter)>>OUTFILTERSHIFT;
 		}
 
@@ -98,7 +94,7 @@ int main(int argc, char **argv) {
 	tb = new testbench;
 #ifdef TRACE
 	tb->trace(trace, 99);
-	trace->open("wave_%s.vcd","\""#DAC#"\"");
+	trace->open("wave.vcd");
 #endif
 
 	// Reset the testbench
@@ -114,5 +110,7 @@ int main(int argc, char **argv) {
 #ifdef TRACE
 	trace->close();
 #endif
+	delete tb;
+	return(0);
 }
 
