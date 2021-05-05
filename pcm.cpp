@@ -32,17 +32,21 @@ void tick() {
 
 #define SAMPLERATE 44100.0
 #define SIGNAL_HZ 200.0
-#define SAMPLES 8192
 
-#define OVERSAMPLE 2048
-#define OUTFILTERSHIFT 12
+#define OVERSAMPLE 128
+#define OUTFILTERSHIFT 7
 
 
-// Return a sample from a sine wave
-double sample(double s)
+// Return a sample (fetched from stdin)
+int sample()
 {
-	double period=SAMPLERATE/SIGNAL_HZ;
-	return(sin((s*2*M_PI)/period));
+	int c;
+	int result=0;
+	result=getchar();
+	result|=(c=getchar())<<8;
+	if(c==EOF)
+		result=-1;
+	return(result);
 }
 
 
@@ -51,11 +55,12 @@ void run_test()
 	int outfilter=0x8000<<OUTFILTERSHIFT;
 	int out;
 	int s;
+	int samp=0;
 
-	for(int i=0;i<SAMPLES;++i)
+	while(samp>=0)
 	{
-		int samp=((1<<(SIGNALWIDTH-1))-1)+((1<<(SIGNALWIDTH-1))-1)*sample(i);
-		tb->d=samp;
+		samp=sample();
+		tb->d=samp^0x8000; // Converted signed PCM data to unsigned
 
 		for(int j=0;j<OVERSAMPLE;++j)
 		{

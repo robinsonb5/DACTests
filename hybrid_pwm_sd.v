@@ -32,7 +32,10 @@ reg [4:0] pwmcounter;
 reg [4:0] pwmthreshold;
 reg [33:0] scaledin;
 reg [15:0] sigma;
+wire [15:0] sigmanext;
 reg q_reg;
+
+assign sigmanext = scaledin[31:16]+{5'b000000,sigma[10:0]};	// Will use previous iteration's scaledin value
 
 assign q=q_reg;
 
@@ -50,13 +53,14 @@ begin
 		if(pwmcounter==pwmthreshold)
 			q_reg<=1'b0;
 
+		scaledin<=33'h200000 // (1<<(16-5))<<16, offset to keep centre aligned.  (Adjusted to eliminate DC offset - PWM not centred?)
+			+({1'b0,d}*16'hf000); // 30<<(16-5)-1;
+
 		if(pwmcounter==5'b11111) // Update threshold when pwmcounter reaches zero
 		begin
 			// Pick a new PWM threshold using a Sigma Delta
-			scaledin<=33'h1000000 // (1<<(16-5))<<16, offset to keep centre aligned.
-				+({1'b0,d}*16'hf000); // 30<<(16-5)-1;
-			sigma<=scaledin[31:16]+{5'b000000,sigma[10:0]};	// Will use previous iteration's scaledin value
-			pwmthreshold<=sigma[15:11]; // Will lag 2 cycles behind, but shouldn't matter.
+			sigma<=sigmanext;
+			pwmthreshold<=sigmanext[15:11]; // Will lag 2 cycles behind, but shouldn't matter.
 			q_reg<=1'b1;
 		end
 

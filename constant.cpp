@@ -6,7 +6,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-#undef TRACE
+#define TRACE
 
 static VerilatedVcdC *trace;
 // Declare the global testbench, of a type externally defined
@@ -15,8 +15,6 @@ static testbench *tb;
 
 
 // Simulate at the speed of the MiST Minimig port's SDRAM clock
-
-#define SIGNALWIDTH 16
 
 #define MHz 113.44
 static double timestamp = 0;
@@ -31,16 +29,20 @@ void tick() {
 }
 
 #define SAMPLERATE 44100.0
-#define SIGNAL_HZ 200.0
-#define SAMPLES 8192
+#define SIGNAL_HZ 47.5
+#define SAMPLES 64
 
-#define OVERSAMPLE 2048
+#define OVERSAMPLE 640
 #define OUTFILTERSHIFT 12
 
 
 // Return a sample from a sine wave
 double sample(double s)
 {
+	int step=s;
+	return(-0.9);
+	step/=512;
+	s=step*512;
 	double period=SAMPLERATE/SIGNAL_HZ;
 	return(sin((s*2*M_PI)/period));
 }
@@ -54,7 +56,7 @@ void run_test()
 
 	for(int i=0;i<SAMPLES;++i)
 	{
-		int samp=((1<<(SIGNALWIDTH-1))-1)+((1<<(SIGNALWIDTH-1))-1)*sample(i);
+		int samp=(32767+32767*sample(i));
 		tb->d=samp;
 
 		for(int j=0;j<OVERSAMPLE;++j)
