@@ -32,7 +32,7 @@ void tick() {
 
 #define SAMPLERATE 44100.0
 #define SIGNAL_HZ 47.5
-#define SAMPLES 8192
+#define SAMPLES 16384
 
 #define OVERSAMPLE 640
 #define OUTFILTERSHIFT 12
@@ -42,11 +42,7 @@ void tick() {
 double sample(double s)
 {
 	int step=s;
-	return(0.0001);
-	step/=512;
-	s=step*512;
-	double period=SAMPLERATE/SIGNAL_HZ;
-	return(sin((s*2*M_PI)/period));
+	return((s-SAMPLES/2)/(SAMPLES*128));
 }
 
 

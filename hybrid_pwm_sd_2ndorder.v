@@ -39,12 +39,13 @@ reg q_reg;
 
 // Input filtering - a simple single-pole IIR low-pass filter.
 // Runs once per PWM cycle, just to limit the maximum input energy to the sigma-detla.
-// 5 bits for the coefficient. (1/32)
+// 2 bits for the coefficient. (1/4)  -  the appropriate amount of filtering will depend on the
+// oversampling ratio.
 
 wire [signalwidth-1:0] infiltered;
 reg infilterena;
 
-iirfilter # (.signalwidth(signalwidth),.cbits(4)) inputfilter
+iirfilter # (.signalwidth(signalwidth),.cbits(2)) inputfilter
 (
 	.clk(clk),
 	.reset_n(reset_n),
@@ -55,12 +56,13 @@ iirfilter # (.signalwidth(signalwidth),.cbits(4)) inputfilter
 
 
 // Approximation of the reconstruction filter, width chosen by experimentation.
-// We allow 9 bits for the coefficient (1/512)
+// We allow 7 bits for the coefficient (1/128) - but the appropriate amount of filtering
+// will depend on the oversampling ratio.
 
 wire [signalwidth-1:0] outfiltered;
 reg outfilterena;
 
-iirfilter # (.signalwidth(signalwidth),.cbits(9),.immediate(1)) outputfilter
+iirfilter # (.signalwidth(signalwidth),.cbits(7),.immediate(1)) outputfilter
 (
 	.clk(clk),
 	.reset_n(reset_n),

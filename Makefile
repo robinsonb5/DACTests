@@ -1,8 +1,11 @@
 VERILATOR_DIR=/usr/share/verilator/include
 VERILATOR_SRC = $(VERILATOR_DIR)/verilated.cpp $(VERILATOR_DIR)/verilated_vcd_c.cpp 
 
-DACS = sigma_delta_dac_1storder hybrid_pwm_sd hybrid_pwm_sd_2ndorder sigma_delta_dac_2ndorder sigma_delta_dac_3rdorder threshold_dac random_dac pwm_dac 
-TESTS = sine fadeout asymmetric constant pcm
+DACS = sigma_delta_dac_1storder hybrid_2ndorder hybrid_2ndorder_filtered \
+	hybrid_pwm_sd hybrid_pwm_sd_2ndorder sigma_delta_dac_2ndorder \
+	sigma_delta_dac_3rdorder threshold_dac random_dac pwm_dac 
+
+TESTS = sine fadeout asymmetric constant pcm sweep
 
 all:
 	for DAC in $(DACS); do \

@@ -53,6 +53,7 @@ int sample()
 void run_test()
 {
 	int outfilter=0x8000<<OUTFILTERSHIFT;
+	int outfilter2=0x8000<<OUTFILTERSHIFT;
 	int out;
 	int s;
 	int samp=0;
@@ -69,10 +70,11 @@ void run_test()
 			s=0xffff*tb->q;
 			// Single-pole approximation of the reconstruction filter
 			outfilter+=((s<<OUTFILTERSHIFT)-outfilter)>>OUTFILTERSHIFT;
+			outfilter2+=outfilter-(outfilter2>>OUTFILTERSHIFT);
 		}
 
 		// Output a sample in signed 16-bit little-endian
-		out=(outfilter>>OUTFILTERSHIFT)-32768;
+		out=(outfilter2>>(2*OUTFILTERSHIFT))-32768;
 		putchar(out&255);
 		putchar((out>>8)&255);
 	}
